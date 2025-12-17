@@ -1,0 +1,6 @@
+CMakeLists.txt linguist-vendored
+guassonFilter.h linguist-vendored
+main.c linguist-vendored
+stb_image.h linguist-vendored
+stb_image_write.h linguist-vendored
+Makefile linguist-vendored
