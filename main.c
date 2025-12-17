@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 int main() {
-    const char *inputFilename = "input_image.png";
-    const char *outputFilename = "output_image.png";
+    const char *inputFilename = "input_images/african_safari.png";
+    const char *outputFilename = "output_images/african_safari.png";
     int blurRadius = 5;
 
     Image *inputImage = loadImage(inputFilename);
