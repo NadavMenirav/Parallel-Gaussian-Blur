@@ -28,6 +28,7 @@ Image *loadImage(const char *filename) {
     image->height = height;
     image->pixels = (RGBA *)malloc(width * height * sizeof(RGBA));
 
+#pragma omp parallel for schedule(static, 16)
     for (int i = 0; i < width * height; i++) {
         image->pixels[i].r = data[4 * i + 0];
         image->pixels[i].g = data[4 * i + 1];
@@ -43,6 +44,7 @@ Image *loadImage(const char *filename) {
 void saveImage(const char *filename, Image *image) {
     unsigned char *data = (unsigned char *)malloc(image->width * image->height * 4);
 
+#pragma omp parallel for schedule(static, 16)
     for (int i = 0; i < image->width * image->height; i++) {
         data[4 * i + 0] = image->pixels[i].r;
         data[4 * i + 1] = image->pixels[i].g;
