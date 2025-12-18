@@ -1,10 +1,12 @@
 #include "guassonFilter.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <omp.h>
 
 int main() {
-    const char *inputFilename = "input_images/african_safari.png";
-    const char *outputFilename = "output_images/african_safari.png";
+    double start = omp_get_wtime();
+    const char *inputFilename = "input_images/windows.png";
+    const char *outputFilename = "output_images/windows.png";
     int blurRadius = 5;
 
     Image *inputImage = loadImage(inputFilename);
@@ -21,5 +23,7 @@ int main() {
     free(outputImage->pixels);
     free(outputImage);
 
+    double end = omp_get_wtime();
+    printf("The time is:%f", end - start);
     return 0;
 }

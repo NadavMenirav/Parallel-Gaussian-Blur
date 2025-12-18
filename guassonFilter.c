@@ -1,10 +1,3 @@
-//
-//  guassonFilter.c
-//  guasonFilter
-//
-//  Created by Saar Azari on 04/07/2024.
-//
-
 #include "guassonFilter.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -14,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -71,8 +65,8 @@ void createGaussianKernel(int radius, double sigma, double **kernel, double *sum
 
     *kernel = (double *)malloc(kernelWidth * kernelWidth * sizeof(double));
 
-    for (int x = -radius; x <= radius; x++) {
-        for (int y = -radius; y <= radius; y++) {
+    for (int y = -radius; y <= radius; y++) {
+        for (int x = -radius; x <= radius; x++) {
             double exponentNumerator = -(x * x + y * y);
             double exponentDenominator = (2 * sigma * sigma);
             double eExpression = exp(exponentNumerator / exponentDenominator);
@@ -82,6 +76,7 @@ void createGaussianKernel(int radius, double sigma, double **kernel, double *sum
         }
     }
 
+    // Normalization
     for (int i = 0; i < kernelWidth * kernelWidth; i++) {
         (*kernel)[i] /= *sum;
     }
@@ -102,14 +97,15 @@ Image *createBlurredImage(int radius, Image *image) {
 
     createGaussianKernel(radius, sigma, &kernel, &sum);
 
-    for (int x = radius; x < width - radius; x++) {
-        for (int y = radius; y < height - radius; y++) {
+#pragma omp parallel for schedule(static)
+    for (int y = radius; y < height - radius; y++) {
+        for (int x = radius; x < width - radius; x++) {
             double redValue = 0.0;
             double greenValue = 0.0;
             double blueValue = 0.0;
 
-            for (int kernelX = -radius; kernelX <= radius; kernelX++) {
-                for (int kernelY = -radius; kernelY <= radius; kernelY++) {
+            for (int kernelY = -radius; kernelY <= radius; kernelY++) {
+                for (int kernelX = -radius; kernelX <= radius; kernelX++) {
                     int imageX = x - kernelX;
                     int imageY = y - kernelY;
                     double kernelValue = kernel[(kernelX + radius) * kernelWidth + (kernelY + radius)];

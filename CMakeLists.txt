@@ -3,8 +3,27 @@ project(assignment_3 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(assignment_3 main.c
+add_executable(assignment_3
+        main.c
         guassonFilter.c
         guassonFilter.h
         stb_image.h
         stb_image_write.h)
+
+set(LIBOMP_PATH /opt/homebrew/opt/libomp)
+
+target_compile_options(assignment_3 PRIVATE
+        -Xpreprocessor -fopenmp
+)
+
+target_include_directories(assignment_3 PRIVATE
+        ${LIBOMP_PATH}/include
+)
+
+target_link_directories(assignment_3 PRIVATE
+        ${LIBOMP_PATH}/lib
+)
+
+target_link_libraries(assignment_3 PRIVATE
+        omp
+)
